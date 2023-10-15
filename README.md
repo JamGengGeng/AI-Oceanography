@@ -1,2 +1,2 @@
 # AI-Oceanography
-homework in sysu AI
+Part of homework in [Dr.Lu](https://github.com/scenty)'s SYSU AIO course.

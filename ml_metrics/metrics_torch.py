@@ -1,4 +1,4 @@
-import numpy as np
+import torch
 
 
 class MSE:
@@ -9,11 +9,11 @@ class MSE:
         MSE = (y - y_hat) ** 2
         match self.reduce:
             case "mean":
-                MSE = np.mean(MSE)
+                MSE = torch.mean(MSE)
             case "sum":
-                MSE = np.sum(MSE)
+                MSE = torch.sum(MSE)
             case _:
-                MSE = np.mean(MSE)
+                MSE = torch.mean(MSE)
         return MSE
 
 
@@ -26,9 +26,9 @@ class RMSE(MSE):
         RMSE = super().__call__(y, y_hat) ** 0.5
         match self.norm:
             case "maxmin":
-                RMSE /= np.sqrt(RMSE)
+                RMSE /= torch.sqrt(RMSE)
             case "mean":
-                RMSE /= np.sqrt(RMSE)
+                RMSE /= torch.sqrt(RMSE)
             case _:
                 pass
         return RMSE
@@ -36,11 +36,11 @@ class RMSE(MSE):
 
 class MAE:
     def __call__(self, y, y_hat):
-        MAE = np.mean(np.abs(y - y_hat))
+        MAE = torch.mean(torch.abs(y - y_hat))
         return MAE
 
 
 class R2:
     def __call__(self, y, y_hat):
-        R2 = 1 - np.sum((y - y_hat) ** 2) / np.sum((y - np.mean(y)) ** 2)
+        R2 = 1 - torch.sum((y - y_hat) ** 2) / torch.sum((y - torch.mean(y)) ** 2)
         return R2

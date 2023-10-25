@@ -44,3 +44,42 @@ class R2:
     def __call__(self, y, y_hat):
         R2 = 1 - torch.sum((y - y_hat) ** 2) / torch.sum((y - torch.mean(y)) ** 2)
         return R2
+
+
+class ClassifyBase:
+    def __call__(self, y, y_hat):
+        labels = torch.unique(y_hat)
+        self.TP = 0
+        self.TN = 0
+        self.FP = 0
+        self.FN = 0
+        for label in labels:
+            self.TP += torch.sum((y_hat == label) & (y == label))
+            self.TN += torch.sum((y_hat != label) & (y != label))
+            self.FP += torch.sum((y_hat == label) & (y != label))
+            self.FN += torch.sum((y_hat != label) & (y == label))
+
+
+class Accuracy(ClassifyBase):
+    def __call__(self, y, y_hat):
+        return torch.sum(y_hat == y) / len(y_hat)
+
+
+class Precision(ClassifyBase):
+    def __call__(self, y, y_hat):
+        super().__call__(y, y_hat)
+        return self.TP / (self.TP + self.FP)
+
+
+class Recall(ClassifyBase):
+    def __call__(self, y, y_hat):
+        super().__call__(y, y_hat)
+        return self.TP / (self.TP + self.FN)
+
+
+class F1(ClassifyBase):
+    def __call__(self, y, y_hat):
+        super().__call__(y, y_hat)
+        self.precision = self.TP / (self.TP + self.FP)
+        self.recall = self.TP / (self.TP + self.FN)
+        return 2 * self.precision * self.recall / (self.precision + self.recall)

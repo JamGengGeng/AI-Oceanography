@@ -26,9 +26,9 @@ class RMSE(MSE):
         RMSE = super().__call__(y, y_hat) ** 0.5
         match self.norm:
             case "maxmin":
-                RMSE /= torch.sqrt(RMSE)
+                RMSE /= torch.max(RMSE) - torch.min(RMSE)
             case "mean":
-                RMSE /= torch.sqrt(RMSE)
+                RMSE /= torch.mean(RMSE)
             case _:
                 pass
         return RMSE

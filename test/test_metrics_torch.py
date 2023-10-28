@@ -2,7 +2,7 @@ from functools import partial
 
 import torch
 import pytest
-from ml_metrics.metrics_torch import F1, MAE, MSE, R2, RMSE, Accuracy, Precision, Recall
+from ml_metrics.metrics_torch import F1, MAE, MSE, R2, RMSE, Accuracy, Precision, Recall, Confusion_Matrix
 from sklearn.metrics import (
     accuracy_score,
     f1_score,
@@ -11,6 +11,7 @@ from sklearn.metrics import (
     precision_score,
     r2_score,
     recall_score,
+    confusion_matrix
 )
 
 
@@ -50,3 +51,10 @@ def test_classification(impl, sk_impl):
     y_hat = torch.IntTensor([0, 1, 2, 3])
     impl = impl()
     assert impl(y, y_hat) - sk_impl(y, y_hat) < 1e-7
+
+
+def test_confusion_matrix():
+    y = torch.IntTensor([2, 1, 1, 0])
+    y_hat = torch.IntTensor([0, 1, 2, 3])
+    cm = Confusion_Matrix()
+    assert torch.equal(cm(y, y_hat), torch.Tensor(confusion_matrix(y, y_hat)))

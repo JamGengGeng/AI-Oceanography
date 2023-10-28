@@ -83,3 +83,13 @@ class F1(ClassifyBase):
         self.precision = self.TP / (self.TP + self.FP)
         self.recall = self.TP / (self.TP + self.FN)
         return 2 * self.precision * self.recall / (self.precision + self.recall)
+
+
+class Confusion_Matrix:
+    def __call__(self, y, y_hat):
+        labels  = np.unique(y_hat)
+        matrix = []
+        for i in labels:
+            matrix.append([np.sum((y_hat == i) & (y == j)) for j in labels])
+        matrix = np.array(matrix)
+        return matrix.T
